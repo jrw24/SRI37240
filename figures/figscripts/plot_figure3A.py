@@ -49,7 +49,7 @@ threshold = 10
 ribosome_site = "A" 	# A, P, E, or 0
 
 
-samples = [samplelist[2]+samplelist[0]+samplelist[1]]
+samples = [samplelist[2]]+[samplelist[0]]+[samplelist[1]]
 print samples
 
 sample_plot_names = samples
@@ -64,7 +64,7 @@ pink = '#eb68c0'
 yellow = '#fff71c'
 blue = '#006eb9'
 
-colorList = [orange, black, cyan]
+col_list = [cyan, black, orange]
 
 if pop == "fl":
 	minlen = str(flmin)
@@ -108,7 +108,7 @@ def avggene_riboshift_plot_overlay(alignposition, ribosome_site, experiment, fiv
 	for file in samples:
 		fp_assign_path = '%s/FPassignment/%s/%s/%s' % (rootpath, genome_name, experiment, file)
 		avggene_csv_path = "%s/avggene%s_ORF%s_%sshift_%s%s150" % (fp_assign_path, alignpos, norm_type, ribosome_shift, assignment, norm) # norm should be 'uneq' for now
-
+		print("avggene_csv_path: ", avggene_csv_path)
 
 		fl_avggene_csv = '%s/%s_fl_rpkmThresh%s_%sto%sf_avg_%s_cdsNorm.csv' % (avggene_csv_path, file, threshold, flmin, flmax, alignpos)
 		# eA_avggene_csv = '%s/%s_eA_rpkmThresh%s_%sto%sf_avg_%s_cdsNorm.csv' % (avggene_csv_path, file, threshold, eAmin, eAmax, alignpos)
@@ -131,7 +131,7 @@ def avggene_riboshift_plot_overlay(alignposition, ribosome_site, experiment, fiv
 		# df_eE_list.append(eE_avggene_df)
 		# df_aL_list.append(aL_avggene_df)
 
-	plot_outfile = "%s/figures/Fig6A_left.pdf" % (rootDir)
+	plot_outfile = "%s/figures/Fig3A_left.pdf" % (rootDir)
 
 
 	fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(4,4))
@@ -141,7 +141,9 @@ def avggene_riboshift_plot_overlay(alignposition, ribosome_site, experiment, fiv
 	counter = 0 ## for making offsets
 	if pop == 'fl':
 		for i in range(len(df_fl_list)):
-			df_fl_list[i].plot.line(x=df_fl_list[i].index+counter, y=df_fl_list[i].columns.values[0], ax=ax, color = col_list[i], lw=1, use_index=True, label=sample_plot_names[i])
+			# print df_fl_list[i]
+			# df_fl_list[i].plot.line(x=df_fl_list[i].index+counter, y=df_fl_list[i].columns.values[0], ax=ax, color = col_list[i], lw=1, use_index=True, label=sample_plot_names[i])
+			df_fl_list[i].plot.line(y=df_fl_list[i].columns.values[0], ax=ax, color = col_list[i], lw=1, use_index=True, label=sample_plot_names[i])
 			# counter +=6
 			# df_fl_list[i].plot.scatter(y=df_fl_list[i].columns.values[0], ax=ax, color = col_list[i], s=2, use_index=True)
 	if pop == 'eA':
@@ -202,19 +204,18 @@ def avggene_riboshift_plot_overlay_zoom(alignposition, ribosome_site, experiment
 		# df_eE_list.append(eE_avggene_df)
 		# df_aL_list.append(aL_avggene_df)
 
-	plot_outfile = "%s/figures/Fig6A_right.pdf" % (rootDir)
+	plot_outfile = "%s/figures/Fig3A_right.pdf" % (rootDir)
 
 
 	fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(4,4))
 
 
-	ax.set_ylim(0, 0.35)
-	ax.set_xlim(0,100)
+
 
 	counter = 0 ## for making offsets
 	if pop == 'fl':
 		for i in range(len(df_fl_list)):
-			df_fl_list[i].plot.line(x=df_fl_list[i].index+counter, y=df_fl_list[i].columns.values[0], ax=ax, color = col_list[i], lw=1, use_index=True, label=sample_plot_names[i])
+			df_fl_list[i].plot.line(y=df_fl_list[i].columns.values[0], ax=ax, color = col_list[i], lw=1, use_index=True, label=sample_plot_names[i])
 			# counter +=6
 			# df_fl_list[i].plot.scatter(y=df_fl_list[i].columns.values[0], ax=ax, color = col_list[i], s=2, use_index=True)
 	if pop == 'eA':
@@ -224,6 +225,8 @@ def avggene_riboshift_plot_overlay_zoom(alignposition, ribosome_site, experiment
 		for i in range(len(df_fl_list)):
 			df_custom_list[i].plot.line(x=df_custom_list[i].index+counter, y=df_custom_list[i].columns.values[0], ax=ax, color = col_list[i], lw=1, use_index=True, label=sample_plot_names[i])
 
+	ax.set_ylim(0, 0.35)
+	ax.set_xlim(0,100)
 	plt.legend(loc=1, prop={'size': 6})
 	plt.savefig(plot_outfile, format = 'pdf', bbox_inches = "tight")
 	plt.close()

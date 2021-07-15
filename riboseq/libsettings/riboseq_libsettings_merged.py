@@ -21,7 +21,7 @@ experiment = 'merged'
 samplelist = [
 	"1_dmso",
 	"2_g418",
-	"3_sri372340"
+	"3_sri37240"
 ]
 
 

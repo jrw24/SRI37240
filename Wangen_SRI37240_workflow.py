@@ -1,11 +1,8 @@
 __author__ = 'Jamie Wangen'
 
 """
-Workflow for generating figures for SRI37240 paper: *** DOI PENDING ***
-
+Workflow for generating figures for SRI37240 paper:
 """
-
-
 
 import sys
 import os
@@ -15,8 +12,10 @@ import subprocess
 from ftplib import FTP
 
 rootDir = os.path.dirname(os.path.realpath(__file__)) ## add current directory as rootDir
-threadNumb = 40
+print("rootDir is %s" % (rootDir))
+threadNumb = 32
 
+### need to activate samtools, and conda-python2...
 
 
 ##### 1) Generate Genome Files:
@@ -175,7 +174,7 @@ class generateGenomes(object):
 		ncGenomeDir = "%s/genomes/star_hg38_ncRNA" % self.rootDir
 		ncGenomeFasta = "%s/genomes/gencodeV30_ncRNA_all.fa" % self.rootDir
 		ncSjdbGTF = "0"
-		ncSAindexNbases = 9
+		ncSAindexNbases = 8
 
 		ncRNA_build_STAR_index = "python2 %s/utils/buildStarIndex.py --rootDir %s --threadNumb %s --STARsparsity %s --genomeDir %s --genomeFastaFiles %s --sjdbGTF %s --SAindexNbases %s" % (
 			self.rootDir, self.rootDir, self.threadNumb, ncSparsity, ncGenomeDir, ncGenomeFasta, ncSjdbGTF, ncSAindexNbases)
@@ -206,22 +205,25 @@ class generateGenomes(object):
 
 class RawData(object):
 
-	### building all files need for downstream analysis
+	### building all files needed for downstream analysis
 
 	def __init__(self, rootDir, threadNumb):
 		self.rootDir = rootDir
 		self.threadNumb = threadNumb
 
 
-	# def FASTQ_dump_sequences(self):
-	# 	"""
-	# 	Download all FASTQ_files in appropriate directories for downstream analysis
-	#	*** Pending release of GEO datasets ***
-	# 	"""
+	def FASTQ_dump_sequences(self):
+		"""
+		Download all FASTQ_files in appropriate directories for downstream analysis
+		GEO accession == GSE144140
+		https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE144140
 
-	# 	fq_dump_cmnd = "python2 %s/utils/fastqDump_sri37240.py --rootDir %s --threadNumb %s" % (
-	# 		self.rootDir, self.rootDir, self.threadNumb)
-	# 	subprocess.Popen(fq_dump_cmnd, shell=True).wait()
+
+		"""
+
+		fq_dump_cmnd = "python2 %s/utils/fastqDump_sri37240.py --rootDir %s --threadNumb %s" % (
+			self.rootDir, self.rootDir, self.threadNumb)
+		subprocess.Popen(fq_dump_cmnd, shell=True).wait()
 
 
 	def merge_allAG_experiment(self):
@@ -230,7 +232,7 @@ class RawData(object):
 		"""
 
 		inputDir = "%s/Data/RPF/FASTQ" % self.rootDir
-		outputDir = "%s/Data/RPF/FASTQ/merge" % self.rootDir
+		outputDir = "%s/Data/RPF/FASTQ/merged" % self.rootDir
 
 		if not os.path.exists(outputDir):	os.makedirs(outputDir)
 
@@ -284,7 +286,7 @@ class RibosomeProfiling_workflow(object):
 
 		stop_pause_cmnd = "python2 %s/riboseq/riboseq_stopCodon_pauseScore.py --rootDir %s --libSetFile %s --threadNumb %s --gtfInFilePrefix %s" % (
 			self.rootDir, self.rootDir, self.libSetFile, self.threadNumb, gtfInFilePrefix)
-		subprocess.Popen(avgene_cmnd, shell=True).wait()
+		subprocess.Popen(stop_pause_cmnd, shell=True).wait()
 
 	# def RP_codon_occ(self):
 
@@ -301,26 +303,6 @@ class RibosomeProfiling_workflow(object):
 	# 	subprocess.Popen(dballTr_cmnd, shell=True).wait()
 
 
-
-# class RNAseq_workflow(object):
-
-# 	def __init__(self, rootDir, threadNumb, libSetFile):
-# 		self.rootDir = rootDir
-# 		self.threadNumb = threadNumb
-# 		self.libSetFile = libSetFile
-
-# 	def RNAexp(self):
-
-# 		rnaseq_cmnd = "python2 %s/RNAseq/RNAseq_main.py --rootDir %s --libSetFile %s --threadNumb %s" % (
-# 			self.rootDir, self.rootDir, self.libSetFile, self.threadNumb)
-# 		subprocess.Popen(rnaseq_cmnd, shell=True).wait()
-
-# 	def RNA_raw_countTables(self):
-# 		raw_countTables_cmnd = "python2 %s/RNAseq/RNAseq_build_exp_RAW_countTables.py --rootDir %s --libSetFile %s --threadNumb %s" % (
-# 			self.rootDir, self.rootDir, self.libSetFile, self.threadNumb)
-# 		subprocess.Popen(raw_countTables_cmnd, shell=True).wait()
-
-
 ### plot figures:
 
 class plot_figures(object):
@@ -335,17 +317,17 @@ class plot_figures(object):
 
 	def plot_figure_6(self):
 
-		fig_cmnd_6A = "python2 %s/figures/figscripts/plot_figure6A.py --rootDir %s --libSetFile %s --threadNumb %s" % (
+		fig_cmnd_3A = "python2 %s/figures/figscripts/plot_figure3A.py --rootDir %s --libSetFile %s --threadNumb %s" % (
 			self.rootDir, self.rootDir, self.libSet_RP_merge, self.threadNumb)
-		subprocess.Popen(fig_cmnd_6A, shell=True).wait()
+		subprocess.Popen(fig_cmnd_3A, shell=True).wait()
 
-		fig_cmnd_6B = "python2 %s/figures/figscripts/plot_figure6B.py --rootDir %s --libSetFile %s --threadNumb %s" % (
+		fig_cmnd_3B = "python2 %s/figures/figscripts/plot_figure3B.py --rootDir %s --libSetFile %s --threadNumb %s" % (
 			self.rootDir, self.rootDir, self.libSet_RP_merge, self.threadNumb)
-		subprocess.Popen(fig_cmnd_6B, shell=True).wait()
+		subprocess.Popen(fig_cmnd_3B, shell=True).wait()
 
-		fig_cmnd_6C = "python2 %s/figures/figscripts/plot_figure6C.py --rootDir %s --libSetFile %s --threadNumb %s" % (
+		fig_cmnd_3C = "python2 %s/figures/figscripts/plot_figure3C.py --rootDir %s --libSetFile %s --threadNumb %s" % (
 			self.rootDir, self.rootDir, self.libSet_RP_merge, self.threadNumb)
-		subprocess.Popen(fig_cmnd_6C, shell=True).wait()
+		subprocess.Popen(fig_cmnd_3C, shell=True).wait()
 
 
 
@@ -360,17 +342,17 @@ def main():
 	genomeGen.download_Gencode_annotation()
 	genomeGen.parse_GTF_file() ## this takes awhile
 	genomeGen.build_annotation_files()
-	genomeGen.parse_GTF_allTr() ## this takes a very long time
-	genomeGen.build_annotation_allTR()
+	### genomeGen.parse_GTF_allTr() ## this takes a very long time
+	### genomeGen.build_annotation_allTR()
 	genomeGen.build_ncRNA_depletion()
 	genomeGen.build_STAR_indexes()
 
-	### 2) Process Raw Data
+	## 2) Process Raw Data
 	rawData = RawData(rootDir, threadNumb)
-	# rawData.FASTQ_dump_sequences()
+	rawData.FASTQ_dump_sequences()
 	rawData.merge_allAG_experiment()
 
-	### 3) Run Ribosome Profiling analysis pipeline
+	## 3) Run Ribosome Profiling analysis pipeline
 	RP = RibosomeProfiling_workflow(rootDir, threadNumb, 
 		libSetFile="riboseq_libsettings_all")
 	RP.RPexp()
@@ -378,16 +360,16 @@ def main():
 	RP.RP_avgene_cdsNorm_stop()
 
 	RP2 = RibosomeProfiling_workflow(rootDir, threadNumb, 
-		libSetFile="riboseq_libsettings_merge")
+		libSetFile="riboseq_libsettings_merged")
 	RP2.RPexp()
 	RP2.RP_raw_countTables()
 	RP2.RP_avgene_cdsNorm_stop()
 	RP2.RP_stopCodon_pauseScore()
 
-	### 4) Plot Figures
+	## 4) Plot Figures
 	pltFig = plot_figures(rootDir, threadNumb,
-		libSet_RP_all = 'riboseq_libsettings_allG418',
-		libSet_RP_merge = 'riboseq_libsettings_allAGmerge')
+		libSet_RP_all = 'riboseq_libsettings_all',
+		libSet_RP_merge = 'riboseq_libsettings_merged')
 	pltFig.plot_figure_6()
 
 

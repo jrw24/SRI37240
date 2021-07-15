@@ -102,9 +102,14 @@ def load_countTables():
 
 def plot_RRTS_boxplot(df):
 
-	figout = "%s/figures/Fig6C.pdf" % rootDir
+	figout = "%s/figures/Fig3C.pdf" % rootDir
 	validsamps = samplelist
 	dfp = df.loc[df['sampname'].isin(validsamps)]
+	print dfp
+	# dfp.to_csv("%s/figures/Fig3C_sourceData.csv" %(rootDir), index=False, columns=['#transcript','gene_name','chrom','sampname','RRTS'])
+	df_csv = pd.pivot(dfp, index="#transcript", columns="sampname", values="RRTS")
+	# df_csv.to_csv("%s/figures/Fig3C_sourceData_pivot.csv" %(rootDir))
+	print df_csv
 	fig, ax = subplots(figsize=(6, 6))
 	ax = sns.boxplot(x='sampname',  y='RRTS', data=dfp, orient = 'v', fliersize = 0, notch = True, palette=colorList)
 	ax.set_ylim((0,1))

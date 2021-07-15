@@ -40,7 +40,7 @@ threadNumb = str(args.threadNumb)
 
 
 ### inputs
-mRNAdf = pd.read_csv('%s/genomes/%s_mRNAseqs.csv' % (rootDir, args.gtfInFilePrefix), sep=',', index_col=0)
+mRNAdf = pd.read_csv('%s_mRNAseqs.csv' % (args.gtfInFilePrefix), sep=',', index_col=0)
 
 print samplelist
 

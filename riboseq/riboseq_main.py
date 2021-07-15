@@ -308,17 +308,17 @@ class RPexperiment(object):
 		
 		## sort and index bam outputs
 		## genome
-		index_genome = 'samtools index %sAligned.sortedByCoord.out.bam' % (star_out_file)
-		print index_genome
-		subprocess.Popen(index_genome, shell=True).wait()
-		## transcriptome
-		sort_transcriptome = 'samtools sort -@ %s %sAligned.toTranscriptome.out.bam %sAligned.toTranscriptome.out.sorted' % (self.threadNumb, star_out_file, star_out_file)
-		index_transcriptome = 'samtools index %sAligned.toTranscriptome.out.sorted.bam' % (star_out_file)
-		print sort_transcriptome
-		subprocess.Popen(sort_transcriptome, shell=True).wait()
-		print index_transcriptome
-		subprocess.Popen(index_transcriptome, shell=True).wait()
-		subprocess.Popen('rm %sAligned.toTranscriptome.out.bam' % (star_out_file), shell = True).wait() 
+		# index_genome = 'samtools index %sAligned.sortedByCoord.out.bam' % (star_out_file)
+		# print index_genome
+		# subprocess.Popen(index_genome, shell=True).wait()
+		# ## transcriptome
+		# sort_transcriptome = 'samtools sort -@ %s -o %sAligned.toTranscriptome.out.sorted %sAligned.toTranscriptome.out.bam ' % (self.threadNumb, star_out_file, star_out_file)
+		# index_transcriptome = 'samtools index %sAligned.toTranscriptome.out.sorted.bam' % (star_out_file)
+		# print sort_transcriptome
+		# subprocess.Popen(sort_transcriptome, shell=True).wait()
+		# print index_transcriptome
+		# subprocess.Popen(index_transcriptome, shell=True).wait()
+		# subprocess.Popen('rm %sAligned.toTranscriptome.out.bam' % (star_out_file), shell = True).wait() 
 
 
 	def STAR_align_Single_Random_Mulitmapper(self):
@@ -366,7 +366,7 @@ class RPexperiment(object):
 		print index_genome
 		subprocess.Popen(index_genome, shell=True).wait()
 		## transcriptome
-		sort_transcriptome = 'samtools sort -@ %s %sAligned.toTranscriptome.out.bam %sAligned.toTranscriptome.out.sorted' % (self.threadNumb, star_out_file, star_out_file)
+		sort_transcriptome = 'samtools sort -@ %s -o %sAligned.toTranscriptome.out.sorted.bam %sAligned.toTranscriptome.out.bam' % (self.threadNumb, star_out_file, star_out_file)
 		index_transcriptome = 'samtools index %sAligned.toTranscriptome.out.sorted.bam' % (star_out_file)
 		print sort_transcriptome
 		subprocess.Popen(sort_transcriptome, shell=True).wait()
@@ -579,7 +579,7 @@ class RPexperiment(object):
 			os.system(commandstring)
 			
 			### sorting and indexing output bamfile
-			sort_bamfile = 'samtools sort %s %s/%s_%s_match.sorted' % (bamfileoutput, bamfileoutpath, self.samp, readsize)
+			sort_bamfile = 'samtools sort -o %s/%s_%s_match.sorted.bam %s' % (bamfileoutpath, self.samp, readsize, bamfileoutput)
 			os.system(sort_bamfile)
 			index_bamfile = 'samtools index %s/%s_%s_match.sorted.bam' % (bamfileoutpath, self.samp, readsize)
 			os.system(index_bamfile)
@@ -655,7 +655,7 @@ class RPexperiment(object):
 			os.system(commandstring)
 			
 			### sorting and indexing output bamfile
-			sort_bamfile = 'samtools sort %s %s/%s_%s_match.sorted' % (bamfileoutput, bamfileoutpath, self.samp, readsize)
+			sort_bamfile = 'samtools sort -o %s/%s_%s_match.sorted.bam %s' % (bamfileoutpath, self.samp, readsize, bamfileoutput)
 			os.system(sort_bamfile)
 			index_bamfile = 'samtools index %s/%s_%s_match.sorted.bam' % (bamfileoutpath, self.samp, readsize)
 			os.system(index_bamfile)
@@ -733,6 +733,9 @@ class RPexperiment(object):
 
 			# fl_shift:
 			riboshiftdict = str(dict_conv).replace(" ","")
+			riboshiftdict = riboshiftdict.replace("'","")
+			riboshiftdict = '"'+riboshiftdict+'"'
+			print("riboseq Main riboshiftdict ==> ", riboshiftdict)
 			# riboshiftdict = {'33':'17','32':'17','31':'16','34':'17'} ## manually set read lengths
 			bamfileoutpath = '%s/%s_star_default' % (fp_assign_path, self.samp)
 			bamfileoutput = '%s/%s_%s_match.bam' % (bamfileoutpath, self.samp, pop)
@@ -747,7 +750,7 @@ class RPexperiment(object):
 			os.system(commandstring)
 			
 			## sort and index bamfile
-			sort_bamfile = 'samtools sort %s %s/%s_%s_match.sorted' % (bamfileoutput, bamfileoutpath, self.samp, pop)
+			sort_bamfile = 'samtools sort -o %s/%s_%s_match.sorted.bam %s' % (bamfileoutpath, self.samp, pop, bamfileoutput)
 			os.system(sort_bamfile)
 			index_bamfile = 'samtools index %s/%s_%s_match.sorted.bam' % (bamfileoutpath, self.samp, pop)
 			os.system(index_bamfile)
@@ -764,6 +767,8 @@ class RPexperiment(object):
 
 			# eA_shift:
 			riboshiftdict = str(dict_conv).replace(" ","")
+			riboshiftdict = riboshiftdict.replace("'","")
+			riboshiftdict = '"'+riboshiftdict+'"'
 			# riboshiftdict = {'33':'17','32':'17','31':'16','34':'17'}
 			bamfileoutpath = '%s/%s_star_default' % (fp_assign_path, self.samp)
 			bamfileoutput = '%s/%s_%s_match.bam' % (bamfileoutpath, self.samp, pop)
@@ -778,7 +783,7 @@ class RPexperiment(object):
 			os.system(commandstring)
 
 			## sort and index bamfile
-			sort_bamfile = 'samtools sort %s %s/%s_%s_match.sorted' % (bamfileoutput, bamfileoutpath, self.samp, pop)
+			sort_bamfile = 'samtools sort -o %s/%s_%s_match.sorted.bam %s' % (bamfileoutpath, self.samp, pop, bamfileoutput)
 			os.system(sort_bamfile)
 			index_bamfile = 'samtools index %s/%s_%s_match.sorted.bam' % (bamfileoutpath, self.samp, pop)
 			os.system(index_bamfile)
@@ -795,6 +800,8 @@ class RPexperiment(object):
 
 			# eE_shift:
 			riboshiftdict = str(dict_conv).replace(" ","")
+			riboshiftdict = riboshiftdict.replace("'","")
+			riboshiftdict = '"'+riboshiftdict+'"'
 			# riboshiftdict = {'33':'17','32':'17','31':'16','34':'17'}
 			bamfileoutpath = '%s/%s_star_default' % (fp_assign_path, self.samp)
 			bamfileoutput = '%s/%s_%s_match.bam' % (bamfileoutpath, self.samp, pop)
@@ -809,7 +816,7 @@ class RPexperiment(object):
 			os.system(commandstring)
 
 			## sort and index bamfile
-			sort_bamfile = 'samtools sort %s %s/%s_%s_match.sorted' % (bamfileoutput, bamfileoutpath, self.samp, pop)
+			sort_bamfile = 'samtools sort -o %s/%s_%s_match.sorted.bam %s' % (bamfileoutpath, self.samp, pop, bamfileoutput)
 			os.system(sort_bamfile)
 			index_bamfile = 'samtools index %s/%s_%s_match.sorted.bam' % (bamfileoutpath, self.samp, pop)
 			os.system(index_bamfile)
@@ -826,6 +833,8 @@ class RPexperiment(object):
 
 			# aL_shift:
 			riboshiftdict = str(dict_conv).replace(" ","")
+			riboshiftdict = riboshiftdict.replace("'","")
+			riboshiftdict = '"'+riboshiftdict+'"'
 			# riboshiftdict = {'33':'17','32':'17','31':'16','34':'17'}
 			
 			bamfileoutpath = '%s/%s_star_default' % (fp_assign_path, self.samp)
@@ -841,7 +850,7 @@ class RPexperiment(object):
 			os.system(commandstring)
 
 			## sort and index bamfile
-			sort_bamfile = 'samtools sort %s %s/%s_%s_match.sorted' % (bamfileoutput, bamfileoutpath, self.samp, pop)
+			sort_bamfile = 'samtools sort -o %s/%s_%s_match.sorted.bam %s' % (bamfileoutpath, self.samp, pop, bamfileoutput)
 			os.system(sort_bamfile)
 			index_bamfile = 'samtools index %s/%s_%s_match.sorted.bam' % (bamfileoutpath, self.samp, pop)
 			os.system(index_bamfile)
@@ -1796,7 +1805,7 @@ def main():
 								cdsDenThresh, raw_dense_thresh, rpm_dense_thresh, norm_type, inset_choice, deduplicate_reads,
 								read_proc_dir, align_dir, stopcodons)
 			
-			## Read Processing
+			# Read Processing
 			RPexp.deduplicate_input_reads()
 			RPexp.cut_5p_end()
 			RPexp.remove_adapter()

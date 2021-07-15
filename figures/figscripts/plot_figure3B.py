@@ -108,8 +108,8 @@ def load_countTables():
 
 def plot_stop_ecdf(dfm):
 
-	figout = "%s/figures/Fig6B.pdf" % rootDir
-
+	figout = "%s/figures/Fig3B.pdf" % rootDir
+	fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(4,4))
 	counter = 0
 	for i in samplelist:
 	    ecdf = ECDF(dfm['scDenseLog2_%s' % i])
